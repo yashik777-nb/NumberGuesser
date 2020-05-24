@@ -9,7 +9,7 @@ Let player choose to play again
 // Game Values
 let min = 1,
   max = 10,
-  winningNum = 2,
+  winningNum = getWinningNum(min, max),
   guessesLeft = 3;
 
 // UI Variables
@@ -23,6 +23,11 @@ const game = document.getElementById("game"),
 // Assign UI Min and Max
 minNum.textContent = min;
 maxNum.textContent = max;
+
+// Play Again Event Listener;
+game.addEventListener("mousedown", function (e) {
+  if (e.target.className == "play-again") window.location.reload();
+});
 
 // Listen for Guess
 guessButton.addEventListener("click", function (e) {
@@ -38,7 +43,7 @@ guessButton.addEventListener("click", function (e) {
     if (guessesLeft == 0) {
       //   Game Over - Lost
       gameOver(
-        lost,
+        "lost",
         `Game Over, YOU Lost! The correct number was ${winningNum}`,
         "red"
       );
@@ -54,13 +59,20 @@ guessButton.addEventListener("click", function (e) {
   }
 });
 
-//
+// Get Winning NUm
+function getWinningNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1));
+}
 
 // Set Message
 function gameOver(won, msg, color) {
-  if (won === "won" || won === "lost") guessInput.disabled = true;
-
   message.textContent = msg;
   message.style.color = color;
   guessInput.style.borderColor = color;
+
+  if (won === "won" || won === "lost") {
+    guessInput.disabled = true;
+    guessButton.value = "Play Again";
+    guessButton.className += "play-again";
+  }
 }
