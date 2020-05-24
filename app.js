@@ -9,7 +9,7 @@ Let player choose to play again
 // Game Values
 let min = 1,
   max = 10,
-  winnnigNum = 2,
+  winningNum = 2,
   guessesLeft = 3;
 
 // UI Variables
@@ -29,18 +29,37 @@ guessButton.addEventListener("click", function (e) {
   let guess = parseInt(guessInput.value);
   // Validate Input
   if (isNaN(guess) || guess < min || guess > max)
-    setMessage(`Please Enter a Number between ${min} and ${max}.`, "red");
+    gameOver(`Please Enter a Number between ${min} and ${max}.`, "red");
   // Check if it is a winning number
-  if (guess == winnnigNum) {
-    //   Disbale Input
-    guessInput.disabled = true;
-    // Border Green and Message
-    setMessage(`${winnnigNum} is Correct!, YOU WIN!`, "green");
+  if (guess == winningNum) {
+    gameOver("won", `${winningNum} is Correct!, YOU WIN!`, "green");
+  } else {
+    guessesLeft -= 1;
+    if (guessesLeft == 0) {
+      //   Game Over - Lost
+      gameOver(
+        lost,
+        `Game Over, YOU Lost! The correct number was ${winningNum}`,
+        "red"
+      );
+    } else {
+      //   Game continues - answer wrong
+      gameOver(
+        "continue",
+        `${guess} is not correct, ${guessesLeft} guesses left.`,
+        "red"
+      );
+      guessInput.value = "";
+    }
   }
 });
 
+//
+
 // Set Message
-function setMessage(msg, color) {
+function gameOver(won, msg, color) {
+  if (won === "won" || won === "lost") guessInput.disabled = true;
+
   message.textContent = msg;
   message.style.color = color;
   guessInput.style.borderColor = color;
